@@ -14,7 +14,7 @@
 ---
 
 ## 目录结构
-
+```text
 LLF-Exp/
 ├─ llama-factory/ # LLaMA-Factory 源码 (外部 clone)
 ├─ ckpts/ # 权重与统计
