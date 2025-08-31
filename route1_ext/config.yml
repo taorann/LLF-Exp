@@ -1,0 +1,61 @@
+# =========================
+# Route-1 SFT Config (assets from env vars)
+# =========================
+
+# ---- Base model ----
+model_name_or_path: /map-vepfs/taoran/LLF-Exp/ckpts/base/Qwen2.5-Math-7B
+template: qwen
+stage: sft
+do_train: true
+do_eval: true
+train_on_prompt: false
+
+# ---- Data ----
+data_path: /map-vepfs/taoran/LLF-Exp/data/json/train.json
+eval_data_path: /map-vepfs/taoran/LLF-Exp/data/json/dev.json
+cutoff_len: 2048
+overwrite_cache: true
+
+# ---- Finetuning (QLoRA) ----
+finetuning_type: lora
+load_in_4bit: true
+bnb_4bit_compute_dtype: bfloat16
+bnb_4bit_quant_type: nf4
+bnb_4bit_use_double_quant: true
+
+lora_r: 32
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target: "q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj"
+
+# ---- Training ----
+output_dir: /map-vepfs/taoran/LLF-Exp/ckpts/adapters/route1_qllora
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 16
+num_train_epochs: 3
+learning_rate: 1.5e-4
+weight_decay: 0.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+max_grad_norm: 1.0
+
+# ---- Dtype / Kernel ----
+bf16: true
+fp16: false
+tf32: true
+flash_attn: auto
+
+# ---- Logging / Eval / Save ----
+logging_steps: 20
+evaluation_strategy: steps
+eval_steps: 1000
+save_steps: 1000
+save_total_limit: 3
+report_to: tensorboard
+
+# ---- Misc ----
+ddp_timeout: 180000
+gradient_checkpointing: false
+optim: adamw_torch
+seed: 42
